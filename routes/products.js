@@ -23,6 +23,16 @@ router.post('/', async (req, res) => {
   res.status(201).send(product);
 });
 
+router.get('/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) return res.status(404).send('Product not found');
+
+  const existingProduct = await prisma.product.findFirst({ where: { id } });
+  if (!existingProduct) return res.status(404).send('Product not found');
+
+  res.send(existingProduct);
+});
+
 router.put('/:id', async (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(404).send('Product not found');
