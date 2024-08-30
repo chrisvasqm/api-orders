@@ -41,4 +41,21 @@ router.post('/', validateProducts, async (req, res) => {
   res.status(201).send(order);
 });
 
+router.get('/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  if (isNaN(id)) return res.status(404).send('Order not found');
+
+  const order = await prisma.order.findUnique({
+    where: {
+      id
+    },
+    include: { OrderItem: { include: { product: true } } }
+  });
+
+  if (!order) return res.status(404).send('Order not found');
+
+  res.send(order);
+});
+
 export default router;
