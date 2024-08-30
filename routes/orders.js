@@ -58,4 +58,18 @@ router.get('/:id', async (req, res) => {
   res.send(order);
 });
 
+router.delete('/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  if (isNaN(id)) return res.status(404).send('Order not found');
+
+  const order = await prisma.order.findUnique({ where: { id } });
+
+  if (!order) return res.status(404).send('Order not found');
+
+  await prisma.order.delete({ where: { id } });
+
+  res.send(order);
+});
+
 export default router;
